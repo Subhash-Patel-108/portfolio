@@ -1,0 +1,324 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/* ------------------------------------------------------------------ */
+/*  Font — `optional` prevents swap-related CLS                       */
+/*  The browser uses Inter ONLY if it's already cached; otherwise it  */
+/*  sticks with the fallback. No reflow when the font arrives late.   */
+/*  This is the single biggest CLS fix in the whole stylesheet.       */
+/* ------------------------------------------------------------------ */
+@import "@fontsource-variable/inter/optional.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ------------------------------------------------------------------ */
+/*                       View Transitions support                     */
+/* ------------------------------------------------------------------ */
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0s !important;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*              Navbar height — single source of truth                */
+/*  Navbar is h-[64px] at every breakpoint. Add 4px of breathing      */
+/*  room so anchored sections land just under the border.             */
+/*  Read by both CSS (scroll-padding-top) and JS (Navbar scroll).    */
+/* ------------------------------------------------------------------ */
+
+:root {
+  --navbar-h: 4.25rem; /* 68px = 64px navbar + 4px */
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+  .dark {
+    color-scheme: dark;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: var(--navbar-h);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    @apply font-sans;
+  }
+
+  body {
+    @apply antialiased bg-background text-foreground;
+    @apply dark:bg-slate-950 dark:text-slate-100;
+    /* Kill iOS rubber-band bounce — smoother scrolling, less repaint */
+    overscroll-behavior-y: none;
+  }
+
+  /* ------------------------------------------------------------------
+     Anti-flash: suppress ALL transitions until the theme bootstrap
+     script has run. Prevents a light→dark flicker on first paint when
+     the user has a stored dark preference.
+     Requires: index.html sets `root.setAttribute('data-theme-ready', 'true')`
+     ------------------------------------------------------------------ */
+  html:not([data-theme-ready]) *,
+  html:not([data-theme-ready]) *::before,
+  html:not([data-theme-ready]) *::after {
+    transition: none !important;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-indigo-500 ring-offset-2 ring-offset-white;
+    @apply dark:ring-offset-slate-950;
+  }
+
+  /* Images — preserve aspect ratio, prevent overflow CLS */
+  img,
+  video {
+    @apply select-none;
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Buttons in Tailwind v4 default to cursor:default — restore pointer */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]) {
+    cursor: pointer;
+  }
+
+  ::selection {
+    @apply bg-indigo-200 text-indigo-900;
+    @apply dark:bg-indigo-500/30 dark:text-indigo-50;
+  }
+
+  * {
+    @apply border-border outline-ring/50;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*                          Custom scrollbar                          */
+/* ------------------------------------------------------------------ */
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-slate-100 dark:bg-slate-900;
+}
+::-webkit-scrollbar-thumb {
+  @apply rounded-full bg-slate-300 dark:bg-slate-700;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-400 dark:bg-slate-600;
+}
+
+/* ------------------------------------------------------------------ */
+/*                    Reduced-motion preference                       */
+/* ------------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*                    Animation performance helpers                   */
+/*  Opt-in utilities. Nothing applies them by default.                */
+/* ------------------------------------------------------------------ */
+
+@layer utilities {
+  /*
+    Promote to its own compositor layer ONLY while animating.
+    Apply to elements that animate continuously (drifting orbs).
+    Avoid `will-change` on static elements — it pins GPU memory.
+  */
+  .animate-gpu {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+  }
+
+  /*
+    Isolate paint & layout for animated wrappers. Prevents sibling
+    reflows when children move. Only safe when the container's
+    children are absolutely positioned (i.e. contain:layout is valid).
+  */
+  .animate-contain {
+    contain: layout paint;
+  }
+
+  /*
+    Lazy-render offscreen sections. Big LCP win when applied, BUT
+    it interferes with IntersectionObserver — reveal animations
+    inside the section may fire a frame late or not at all.
+    Apply ONLY to sections that don't rely on useReveal.
+
+    Usage: <Section className="cv-auto ...">
+  */
+  .cv-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 800px;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*                    Shimmer (opt-in skeletons)                      */
+/* ------------------------------------------------------------------ */
+
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+@layer utilities {
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(148, 163, 184, 0.15) 50%,
+      transparent 100%
+    );
+    background-size: 400px 100%;
+    animation: shimmer 1.4s ease-in-out infinite;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*                          Theme tokens                              */
+/* ------------------------------------------------------------------ */
+
+@theme inline {
+  --font-heading: var(--font-sans);
+  --font-sans: "Inter Variable", sans-serif;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
