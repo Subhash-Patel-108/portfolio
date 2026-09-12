@@ -1,31 +1,24 @@
-import type { ComponentType } from 'react';
 import {
     Award,
-    Brain,
-    Briefcase,
     Boxes,
-    Bug,
+    Brain,
     Cloud,
-    Code2,
     Database,
     FileCode2,
-    GitBranch,
     GraduationCap,
     Layout,
     Network,
     Server,
     Sparkles,
-    Star,
-    Terminal,
-    TestTube2,
     Trophy,
     Workflow,
     Wrench,
-    Zap,
+    Zap
 } from 'lucide-react';
+import type { ComponentType } from 'react';
 
-import { GithubIcon, LinkedinIcon } from '../components/icons/BrandIcons';
 import { GeeksforGeeksIcon, LeetCodeIcon } from '@/components/icons/CodingIcons';
+import { GithubIcon, LinkedinIcon } from '../components/icons/BrandIcons';
 
 /* -------------------------------------------------------------------------- */
 /*                                   Types                                    */

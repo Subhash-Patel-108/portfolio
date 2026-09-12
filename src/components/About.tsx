@@ -1,10 +1,10 @@
-import { ArrowRight } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
 
-import Section from './ui/Section';
-import { useReveal } from '../hooks/useReveal';
-import { personal } from '../data/portfolio';
 import { useCallback, useEffect, useState } from 'react';
+import { personal } from '../data/portfolio';
+import { useReveal } from '../hooks/useReveal';
+import Section from './ui/Section';
 
 /* -------------------------------------------------------------------------- */
 /*                                   Tokens                                   */
@@ -131,50 +131,45 @@ const DEPTH_OPACITY: Record<TechTag['depth'], string> = {
 /*                              Spec strip data                               */
 /* -------------------------------------------------------------------------- */
 
-type SpecTone = 'neutral' | 'amber' | 'emerald';
+// type SpecTone = 'neutral' | 'amber' | 'emerald';
 
-interface Spec {
-    label: string;
-    value: string;
-    tone: SpecTone;
-    live?: boolean;
-}
+// interface Spec {
+//     label: string;
+//     value: string;
+//     tone: SpecTone;
+//     live?: boolean;
+// }
 
-const SPECS: Spec[] = [
-    { label: 'Based in', value: personal.location, tone: 'neutral' },
-    { label: 'Focus', value: 'Backend · Cloud · Full Stack', tone: 'amber' },
-    { label: 'Status', value: 'Open to opportunities', tone: 'emerald', live: true },
-];
 
-const TONE_STYLE: Record<SpecTone, { card: string; dot: string }> = {
-    neutral: {
-        card: [
-            'border-stone-200/80 bg-stone-50/70',
-            'hover:border-stone-300 hover:bg-stone-100/70',
-            'dark:border-slate-800 dark:bg-slate-900/50',
-            'dark:hover:border-slate-700 dark:hover:bg-slate-800/50',
-        ].join(' '),
-        dot: 'bg-slate-400 dark:bg-slate-500',
-    },
-    amber: {
-        card: [
-            'border-amber-200/70 bg-amber-50/60',
-            'hover:border-amber-300/80 hover:bg-amber-50/90',
-            'dark:border-amber-500/20 dark:bg-amber-500/[0.06]',
-            'dark:hover:border-amber-500/30 dark:hover:bg-amber-500/[0.09]',
-        ].join(' '),
-        dot: 'bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.55)]',
-    },
-    emerald: {
-        card: [
-            'border-emerald-200/70 bg-emerald-50/60',
-            'hover:border-emerald-300/80 hover:bg-emerald-50/90',
-            'dark:border-emerald-500/20 dark:bg-emerald-500/[0.06]',
-            'dark:hover:border-emerald-500/30 dark:hover:bg-emerald-500/[0.09]',
-        ].join(' '),
-        dot: 'bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.55)]',
-    },
-};
+// const TONE_STYLE: Record<SpecTone, { card: string; dot: string }> = {
+//     neutral: {
+//         card: [
+//             'border-stone-200/80 bg-stone-50/70',
+//             'hover:border-stone-300 hover:bg-stone-100/70',
+//             'dark:border-slate-800 dark:bg-slate-900/50',
+//             'dark:hover:border-slate-700 dark:hover:bg-slate-800/50',
+//         ].join(' '),
+//         dot: 'bg-slate-400 dark:bg-slate-500',
+//     },
+//     amber: {
+//         card: [
+//             'border-amber-200/70 bg-amber-50/60',
+//             'hover:border-amber-300/80 hover:bg-amber-50/90',
+//             'dark:border-amber-500/20 dark:bg-amber-500/[0.06]',
+//             'dark:hover:border-amber-500/30 dark:hover:bg-amber-500/[0.09]',
+//         ].join(' '),
+//         dot: 'bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.55)]',
+//     },
+//     emerald: {
+//         card: [
+//             'border-emerald-200/70 bg-emerald-50/60',
+//             'hover:border-emerald-300/80 hover:bg-emerald-50/90',
+//             'dark:border-emerald-500/20 dark:bg-emerald-500/[0.06]',
+//             'dark:hover:border-emerald-500/30 dark:hover:bg-emerald-500/[0.09]',
+//         ].join(' '),
+//         dot: 'bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.55)]',
+//     },
+// };
 
 /* -------------------------------------------------------------------------- */
 /*                                Tech tag pill                               */
@@ -300,40 +295,40 @@ function ProofCard({ point, index }: { point: ProofPoint; index: number }) {
 /*                                Spec card                                   */
 /* -------------------------------------------------------------------------- */
 
-function SpecCard({ spec }: { spec: Spec }) {
-    const tone = TONE_STYLE[spec.tone];
+// function SpecCard({ spec }: { spec: Spec }) {
+//     const tone = TONE_STYLE[spec.tone];
 
-    return (
-        <div
-            className={[
-                'group/spec flex items-center justify-between gap-2 rounded-lg border px-3 py-2 transition-colors duration-300 sm:block sm:rounded-xl sm:px-3 sm:py-2.5 lg:px-3.5 lg:py-3',
-                tone.card,
-            ].join(' ')}
-        >
-            <div className="flex items-center gap-1.5">
-                <span
-                    aria-hidden="true"
-                    className={[
-                        'relative flex h-1.5 w-1.5 shrink-0 rounded-full',
-                        tone.dot,
-                    ].join(' ')}
-                >
-                    {spec.live && (
-                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
-                    )}
-                </span>
+//     return (
+//         <div
+//             className={[
+//                 'group/spec flex items-center justify-between gap-2 rounded-lg border px-3 py-2 transition-colors duration-300 sm:block sm:rounded-xl sm:px-3 sm:py-2.5 lg:px-3.5 lg:py-3',
+//                 tone.card,
+//             ].join(' ')}
+//         >
+//             <div className="flex items-center gap-1.5">
+//                 <span
+//                     aria-hidden="true"
+//                     className={[
+//                         'relative flex h-1.5 w-1.5 shrink-0 rounded-full',
+//                         tone.dot,
+//                     ].join(' ')}
+//                 >
+//                     {spec.live && (
+//                         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
+//                     )}
+//                 </span>
 
-                <span className="font-mono text-[9px] font-medium uppercase tracking-[0.16em] text-stone-500 sm:text-[9.5px] lg:text-[10px] dark:text-slate-500">
-                    {spec.label}
-                </span>
-            </div>
+//                 <span className="font-mono text-[9px] font-medium uppercase tracking-[0.16em] text-stone-500 sm:text-[9.5px] lg:text-[10px] dark:text-slate-500">
+//                     {spec.label}
+//                 </span>
+//             </div>
 
-            <p className="shrink-0 truncate text-right text-[12px] font-semibold leading-snug tracking-[-0.005em] text-stone-900 sm:mt-1 sm:shrink sm:text-left sm:text-[12.5px] lg:mt-1.5 lg:text-[13.5px] dark:text-white">
-                {spec.value}
-            </p>
-        </div>
-    );
-}
+//             <p className="shrink-0 truncate text-right text-[12px] font-semibold leading-snug tracking-[-0.005em] text-stone-900 sm:mt-1 sm:shrink sm:text-left sm:text-[12.5px] lg:mt-1.5 lg:text-[13.5px] dark:text-white">
+//                 {spec.value}
+//             </p>
+//         </div>
+//     );
+// }
 
 /* -------------------------------------------------------------------------- */
 /*                                   About                                    */

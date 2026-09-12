@@ -2,15 +2,45 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-/* ------------------------------------------------------------------ */
-/*  Font — `optional` prevents swap-related CLS                       */
-/*  The browser uses Inter ONLY if it's already cached; otherwise it  */
-/*  sticks with the fallback. No reflow when the font arrives late.   */
-/*  This is the single biggest CLS fix in the whole stylesheet.       */
-/* ------------------------------------------------------------------ */
-@import "@fontsource-variable/inter/optional.css";
-
 @custom-variant dark (&:is(.dark *));
+
+/* ------------------------------------------------------------------ */
+/*  Font — Inter Variable, self-hosted with `font-display: optional`  */
+/*                                                                     */
+/*  `optional` means: if the font is already cached, use it.          */
+/*  Otherwise use the fallback permanently for this load (no late     */
+/*  swap, no CLS). Next visit picks up Inter from cache.              */
+/*                                                                     */
+/*  This replaces the `@fontsource-variable/inter` import because the */
+/*  package doesn't ship an `optional.css` variant — Fontsource's     */
+/*  documented approach for Vite is a custom `@font-face`. Vite will  */
+/*  resolve the `url()` from node_modules and rewrite it to a hashed  */
+/*  asset URL in the production build.                                */
+/* ------------------------------------------------------------------ */
+
+@font-face {
+  font-family: "Inter Variable";
+  font-style: normal;
+  font-display: optional;
+  font-weight: 100 900;
+  src: url("@fontsource-variable/inter/files/inter-latin-wght-normal.woff2")
+    format("woff2-variations");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6,
+    U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC,
+    U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Inter Variable";
+  font-style: italic;
+  font-display: optional;
+  font-weight: 100 900;
+  src: url("@fontsource-variable/inter/files/inter-latin-wght-italic.woff2")
+    format("woff2-variations");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6,
+    U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC,
+    U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
 
 /* ------------------------------------------------------------------ */
 /*                       View Transitions support                     */
@@ -39,9 +69,6 @@
 
 /* ------------------------------------------------------------------ */
 /*              Navbar height — single source of truth                */
-/*  Navbar is h-[64px] at every breakpoint. Add 4px of breathing      */
-/*  room so anchored sections land just under the border.             */
-/*  Read by both CSS (scroll-padding-top) and JS (Navbar scroll).    */
 /* ------------------------------------------------------------------ */
 
 :root {
@@ -68,16 +95,10 @@
   body {
     @apply antialiased bg-background text-foreground;
     @apply dark:bg-slate-950 dark:text-slate-100;
-    /* Kill iOS rubber-band bounce — smoother scrolling, less repaint */
     overscroll-behavior-y: none;
   }
 
-  /* ------------------------------------------------------------------
-     Anti-flash: suppress ALL transitions until the theme bootstrap
-     script has run. Prevents a light→dark flicker on first paint when
-     the user has a stored dark preference.
-     Requires: index.html sets `root.setAttribute('data-theme-ready', 'true')`
-     ------------------------------------------------------------------ */
+  /* Anti-flash: suppress transitions until theme bootstrap runs. */
   html:not([data-theme-ready]) *,
   html:not([data-theme-ready]) *::before,
   html:not([data-theme-ready]) *::after {
@@ -89,7 +110,6 @@
     @apply dark:ring-offset-slate-950;
   }
 
-  /* Images — preserve aspect ratio, prevent overflow CLS */
   img,
   video {
     @apply select-none;
@@ -97,7 +117,6 @@
     height: auto;
   }
 
-  /* Buttons in Tailwind v4 default to cursor:default — restore pointer */
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]) {
     cursor: pointer;
@@ -148,37 +167,18 @@
 
 /* ------------------------------------------------------------------ */
 /*                    Animation performance helpers                   */
-/*  Opt-in utilities. Nothing applies them by default.                */
 /* ------------------------------------------------------------------ */
 
 @layer utilities {
-  /*
-    Promote to its own compositor layer ONLY while animating.
-    Apply to elements that animate continuously (drifting orbs).
-    Avoid `will-change` on static elements — it pins GPU memory.
-  */
   .animate-gpu {
     will-change: transform, opacity;
     transform: translateZ(0);
   }
 
-  /*
-    Isolate paint & layout for animated wrappers. Prevents sibling
-    reflows when children move. Only safe when the container's
-    children are absolutely positioned (i.e. contain:layout is valid).
-  */
   .animate-contain {
     contain: layout paint;
   }
 
-  /*
-    Lazy-render offscreen sections. Big LCP win when applied, BUT
-    it interferes with IntersectionObserver — reveal animations
-    inside the section may fire a frame late or not at all.
-    Apply ONLY to sections that don't rely on useReveal.
-
-    Usage: <Section className="cv-auto ...">
-  */
   .cv-auto {
     content-visibility: auto;
     contain-intrinsic-size: 0 800px;

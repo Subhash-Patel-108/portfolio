@@ -1,4 +1,3 @@
-import { createPortal } from 'react-dom';
 import {
     AlertTriangle,
     CheckCircle2,
@@ -7,6 +6,7 @@ import {
     X,
     XCircle,
 } from 'lucide-react';
+import { createPortal } from 'react-dom';
 import {
     useToast,
     type Toast,

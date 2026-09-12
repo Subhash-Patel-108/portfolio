@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent, type FormEvent } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import {
     ArrowUpRight,
     Loader2,
@@ -8,12 +8,12 @@ import {
     Send,
     type LucideIcon,
 } from 'lucide-react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { useState, type ChangeEvent, type FormEvent } from 'react';
 
-import Section from './ui/Section';
-import { useReveal } from '../hooks/useReveal';
-import { contactInfo, personal, socials } from '../data/portfolio';
 import { useToast } from '@/contexts/ToastContext';
+import { contactInfo, personal, socials } from '../data/portfolio';
+import { useReveal } from '../hooks/useReveal';
+import Section from './ui/Section';
 const FORMSPREE_ENDPOINT = import.meta.env.VITE_FORMSPREE_ENDPOINT;
 /* -------------------------------------------------------------------------- */
 /*                                   Tokens                                   */

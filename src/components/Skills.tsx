@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, memo } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import {
     Brain,
     Cloud,
@@ -9,7 +9,7 @@ import {
     Workflow,
     type LucideIcon,
 } from 'lucide-react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import type { IconType } from 'react-icons';
 
 /* Matter.js is loaded dynamically — see IconPlayground below.
@@ -20,65 +20,65 @@ type MatterModule = typeof import('matter-js');
 import { useTheme } from '@/contexts/ThemeToggle';
 
 /* ------------------------- Font Awesome 6 (fa6) ------------------------- */
-import { FaJava, FaAws } from 'react-icons/fa6';
+import { FaAws, FaJava } from 'react-icons/fa6';
 
 /* ------------------------- Font Awesome 5 (fa) -------------------------- */
 import {
-    FaJs,
-    FaReact,
-    FaHtml5,
+    FaCode,
     FaCss3Alt,
-    FaNodeJs,
-    FaServer,
     FaDatabase,
     FaDocker,
-    FaLinux,
     FaGitAlt,
     FaGithub,
+    FaHtml5,
+    FaJs,
+    FaLinux,
+    FaNodeJs,
     FaNpm,
+    FaReact,
+    FaServer,
     FaTerminal,
-    FaCode,
 } from 'react-icons/fa';
 
 /* --------------------------- Simple Icons (si) -------------------------- */
 import {
+    SiApachekafka,
+    SiApachemaven,
     SiC,
     SiCplusplus,
-    SiPython,
-    SiTypescript,
-    SiTailwindcss,
-    SiRedux,
-    SiVite,
-    SiSpringboot,
-    SiSpring,
-    SiExpress,
-    SiThymeleaf,
-    SiGraphql,
-    SiSocketdotio,
-    SiMysql,
-    SiRedis,
-    SiMongodb,
-    SiApachekafka,
-    SiJsonwebtokens,
-    SiJson,
-    SiSwagger,
-    SiSelenium,
-    SiKubernetes,
-    SiGnubash,
-    SiNginx,
-    SiJenkins,
-    SiGithubactions,
-    SiTerraform,
-    SiApachemaven,
-    SiGradle,
-    SiPostman,
-    SiIntellijidea,
     SiEclipseide,
-    SiPrometheus,
-    SiGrafana,
-    SiLeetcode,
+    SiExpress,
     SiGeeksforgeeks,
+    SiGithubactions,
+    SiGnubash,
+    SiGradle,
+    SiGrafana,
+    SiGraphql,
+    SiIntellijidea,
+    SiJenkins,
     SiJira,
+    SiJson,
+    SiJsonwebtokens,
+    SiKubernetes,
+    SiLeetcode,
+    SiMongodb,
+    SiMysql,
+    SiNginx,
+    SiPostman,
+    SiPrometheus,
+    SiPython,
+    SiRedis,
+    SiRedux,
+    SiSelenium,
+    SiSocketdotio,
+    SiSpring,
+    SiSpringboot,
+    SiSwagger,
+    SiTailwindcss,
+    SiTerraform,
+    SiThymeleaf,
+    SiTypescript,
+    SiVite,
 } from 'react-icons/si';
 
 /* --------------------- Runtime lookup for tricky icons ------------------ */
@@ -88,9 +88,9 @@ const siLookup = ReactIconsSi as Record<string, IconType | undefined>;
 
 const VisualStudioCode: IconType | null = siLookup.SiVisualstudiocode ?? null;
 
-import Section from './ui/Section';
 import { useReveal } from '../hooks/useReveal';
 import { DynamoDBIcon, EC2Icon } from './icons/BrandIcons';
+import Section from './ui/Section';
 
 /* -------------------------------------------------------------------------- */
 /*                    Custom SVGs for removed / missing icons                 */
@@ -616,9 +616,9 @@ function IconPlayground({ visible }: IconPlaygroundProps) {
             Events.on(engine, 'afterUpdate', onAfterUpdate);
 
             const runner = Runner.create({
-                isFixed: true,
                 delta: 1000 / 60,
             });
+            runner.enabled = false;
             runnerRef.current = runner;
             // Start enabled only if the section is currently visible.
             runner.enabled = inViewport;

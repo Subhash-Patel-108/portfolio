@@ -1,11 +1,4 @@
-import {
-    useCallback,
-    useEffect,
-    useRef,
-    useState,
-    type ComponentType,
-    type ReactNode,
-} from 'react';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import {
     Code2,
     FileText,
@@ -16,15 +9,21 @@ import {
     User,
     X,
 } from 'lucide-react';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import {
+    useCallback,
+    useEffect,
+    useRef,
+    useState,
+    type ComponentType,
+    type ReactNode,
+} from 'react';
 
-import { useScrollSpy } from '../hooks/useScrollSpy';
-import { personal, socials } from '../data/portfolio';
 import { useTheme } from '@/contexts/ThemeToggle';
-import { useToast } from '@/contexts/ToastContext';
+import { personal, socials } from '../data/portfolio';
+import { useScrollSpy } from '../hooks/useScrollSpy';
 
-import Logo from './Logo';
 import { GithubIcon, LinkedinIcon } from './icons/BrandIcons';
+import Logo from './Logo';
 import ThemeToggle from './ThemeToggle';
 
 /* -------------------------------------------------------------------------- */
@@ -296,7 +295,6 @@ function SocialIconLink({
 
 export default function Navbar() {
     const { theme } = useTheme();
-    const toast = useToast();
     const activeId = useScrollSpy(NAV_IDS);
     const [mobileOpen, setMobileOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
@@ -355,15 +353,15 @@ export default function Navbar() {
         }
     }, [mobileOpen]);
 
-    const handleThemeToggle = useCallback(
-        (next: 'light' | 'dark') => {
-            toast.info(next === 'dark' ? 'Dark mode enabled' : 'Light mode enabled', {
-                description: 'Your preference has been saved.',
-                duration: 2200,
-            });
-        },
-        [toast],
-    );
+    // const handleThemeToggle = useCallback(
+    //     (next: 'light' | 'dark') => {
+    //         toast.info(next === 'dark' ? 'Dark mode enabled' : 'Light mode enabled', {
+    //             description: 'Your preference has been saved.',
+    //             duration: 2200,
+    //         });
+    //     },
+    //     [toast],
+    // );
 
     const headerSocials = [
         {

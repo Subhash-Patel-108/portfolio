@@ -1,4 +1,4 @@
-import { useCallback, type ComponentType } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import {
     ArrowDown,
     ArrowRight,
@@ -7,11 +7,11 @@ import {
     MapPin,
     Trophy,
 } from 'lucide-react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { useCallback, type ComponentType } from 'react';
 
-import { useTypewriter } from '../hooks/useTypewriter';
-import { personal, socials, stats, codingProfiles } from '../data/portfolio';
 import { useToast } from '@/contexts/ToastContext';
+import { codingProfiles, personal, socials, stats } from '../data/portfolio';
+import { useTypewriter } from '../hooks/useTypewriter';
 
 /* -------------------------------------------------------------------------- */
 /*  Tokens                                                                    */

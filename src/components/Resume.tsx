@@ -677,7 +677,6 @@ interface AwardTimelineEntryProps {
 
 function AwardTimelineEntry({
     award,
-    index,
     palette,
 }: AwardTimelineEntryProps) {
     const shouldReduceMotion = useReducedMotion();
@@ -806,7 +805,6 @@ interface CertificationTimelineEntryProps {
 
 function CertificationTimelineEntry({
     cert,
-    index,
     palette,
 }: CertificationTimelineEntryProps) {
     const shouldReduceMotion = useReducedMotion();
