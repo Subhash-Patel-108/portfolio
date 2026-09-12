@@ -14,7 +14,6 @@ import { useToast } from '@/contexts/ToastContext';
 import { contactInfo, personal, socials } from '../data/portfolio';
 import { useReveal } from '../hooks/useReveal';
 import Section from './ui/Section';
-const FORMSPREE_ENDPOINT = import.meta.env.VITE_FORMSPREE_ENDPOINT;
 /* -------------------------------------------------------------------------- */
 /*                                   Tokens                                   */
 /* -------------------------------------------------------------------------- */
@@ -133,7 +132,7 @@ export default function Contact() {
         });
 
         try {
-            const response = await fetch(FORMSPREE_ENDPOINT, {
+            const response = await fetch("https://formspree.io/f/mvkoyeaq", {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',
